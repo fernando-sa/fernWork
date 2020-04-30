@@ -1,0 +1,16 @@
+{
+    "name": "fernando-sa/orm",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Fernando Almeida",
+            "email": "fernando.bka1@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "fernandoSa\\": "src"
+        }
+    }
+}
