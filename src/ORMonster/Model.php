@@ -4,9 +4,10 @@ namespace fernandoSa\ORMonster;
 
 use fernandoSa\Database\Drivers\DriverStrategy;
 
-class Model{
+class Model
+{
     protected $driver;
-    
+
     // TODO: Remove
     protected $table = "users";
 
@@ -28,31 +29,31 @@ class Model{
     public function save()
     {
         $this->driver
-                ->save($this)
-                ->execute();
+            ->save($this)
+            ->execute();
     }
 
     public function findAll()
     {
         return $this->driver
-                ->select()
-                ->execute()
-                ->all();        
+            ->select()
+            ->execute()
+            ->all();
     }
 
     public function find(array $conditions = [], array $columns = ['*'])
     {
         return $this->driver
-                ->select($conditions, $columns)
-                ->execute()
-                ->first();
+            ->select($conditions, $columns)
+            ->execute()
+            ->first();
     }
 
     public function delete()
     {
         $this->driver
-                ->delete($this)
-                ->execute();   
+            ->delete($this)
+            ->execute();
     }
 
     public function className() : string

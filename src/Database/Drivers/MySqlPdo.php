@@ -6,7 +6,8 @@ use Exception;
 use fernandoSa\ORMonster\Model;
 use PDOException;
 
-class MySqlPdo implements DriverStrategy{
+class MySqlPdo implements DriverStrategy
+{
 
     private $pdo;
     private $tableName;
@@ -31,11 +32,12 @@ class MySqlPdo implements DriverStrategy{
     public function save(Model $data) : DriverStrategy
     {
         $primaryKeyName = $this->primaryKeyName;
-        
-        if(empty($data->$primaryKeyName))
+
+        if (empty($data->$primaryKeyName)) {
             $this->insert($data);
-        else
+        } else {
             $this->update($data);
+        }
 
         return $this;
     }
@@ -53,7 +55,7 @@ class MySqlPdo implements DriverStrategy{
         $fieldsToBind = implode(', ', $fieldsToBind);
 
         $query = "insert into {$this->tableName} ({$fields}) VALUES ({$fieldsToBind})";
-        
+
         $this->query = $this->pdo->prepare($query);
 
         $this->bind($data);
@@ -63,8 +65,9 @@ class MySqlPdo implements DriverStrategy{
     {
         $primaryKeyName = $this->primaryKeyName;
 
-        if(empty($data->$primaryKeyName))
+        if (empty($data->$primaryKeyName)) {
             throw new Exception("Model need a primary key to be updated");
+        }
 
         $updateData =  $this->parameters($data);
 
@@ -83,15 +86,17 @@ class MySqlPdo implements DriverStrategy{
 
         $conditions =  $this->parameters($parameters);
 
-        if(in_array("*", $columns))
+        if (in_array("*", $columns)) {
             $columns = "*";
-        else
+        } else {
             $columns = implode(",", $columns);
+        }
 
         $query = "SELECT {$columns} FROM {$this->tableName}";
 
-        if($conditions)
+        if ($conditions) {
             $query .= " WHERE {$conditions}";
+        }
 
         $this->query = $this->pdo->prepare($query);
 
@@ -104,8 +109,9 @@ class MySqlPdo implements DriverStrategy{
     {
         $primaryKeyName = $this->primaryKeyName;
 
-        if(empty($data->$primaryKeyName))
+        if (empty($data->$primaryKeyName)) {
             throw new Exception("Model need a primary key to be updated");
+        }
 
         $query = "DELETE FROM {$this->tableName} WHERE {$primaryKeyName} = {$data->$primaryKeyName}";
 
@@ -118,8 +124,9 @@ class MySqlPdo implements DriverStrategy{
 
     public function execute(string $query = null) : DriverStrategy
     {
-        if($query)
+        if ($query) {
             $this->query = $this->pdo->prepare($query);
+        }
 
         $this->query->execute();
         return $this;
@@ -143,7 +150,7 @@ class MySqlPdo implements DriverStrategy{
             $fields[] = $field. '=:' . $field;
         }
 
-        return implode(', ', $fields);        
+        return implode(', ', $fields);
     }
 
     public function bind($data)
@@ -155,6 +162,5 @@ class MySqlPdo implements DriverStrategy{
         } catch (PDOException $exception) {
             echo("Error binding query values. Message: {$exception->getMessage()}. Code: {$exception->getCode()}.");
         }
-
     }
 }

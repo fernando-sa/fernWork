@@ -4,7 +4,8 @@ namespace fernandoSa\Database\Drivers;
 
 use fernandoSa\ORMonster\Model;
 
-interface DriverStrategy{
+interface DriverStrategy
+{
 
     public function setTable(string $tableName);
     public function setPrimaryKey(string $primaryKey);
@@ -14,8 +15,6 @@ interface DriverStrategy{
     public function select(array $parameters = [], array $columns = ['*']) : DriverStrategy;
     public function delete(Model $data) : DriverStrategy;
     public function execute() : DriverStrategy;
-    public function parameters($parameters) : string;    
+    public function parameters($parameters) : string;
     public function bind($data);
-
-
 }

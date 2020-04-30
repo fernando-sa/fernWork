@@ -12,5 +12,8 @@
         "psr-4": {
             "fernandoSa\\": "src"
         }
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "*"
     }
 }
