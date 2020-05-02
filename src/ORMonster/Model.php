@@ -13,6 +13,8 @@ class Model
 
     protected $primaryKey = "id";
 
+    protected $modelQuery;
+
     public function setDriverAmbient(DriverStrategy $driver) : Model
     {
         $this->driver = $driver;
@@ -35,18 +37,19 @@ class Model
 
     public function findAll()
     {
-        return $this->driver
-            ->select()
-            ->execute()
-            ->all();
+        if(! $this->modelQuery)
+            $this->modelQuery = new ModelQuery($this);
+
+        return $this->modelQuery->findAll($this);
     }
 
     public function find(array $conditions = [], array $columns = ['*'])
     {
-        return $this->driver
-            ->select($conditions, $columns)
-            ->execute()
-            ->first();
+        if(! $this->modelQuery)
+            $this->modelQuery = new ModelQuery($this);
+
+        return $this->modelQuery->find($conditions, $columns);
+
     }
 
     public function delete()

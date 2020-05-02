@@ -5,6 +5,7 @@ require __DIR__ . '/vendor/autoload.php';
 use fernandoSa\ORMonster\Model;
 use fernandoSa\Database\Connection;
 use fernandoSa\Database\Drivers\MySqlPdo;
+use fernandoSa\Router\Router;
 
 $connection = new Connection('mysql', 'localhost', 'orm', 'user', 'secret');
 
@@ -12,19 +13,23 @@ $pdo = new MySqlPdo($connection->getPdo());
 
 $model = new Model();
 
+// Remove this when implement DI
 $model->setDriverAmbient($pdo);
 
-// $model->name = "Fernando";
-// $model->email = "teste@teste.teste";
-// $model->save();
+$path_info = $_SERVER['PATH_INFO'] ?? '/';
+$request_method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
-// $model->id = 1;
-// $model->name = "Outro Fernando";
-// $model->save();
+$router = new Router($path_info, $request_method);
 
-$modelsCount = count($model->findAll());
+$router->get('/hello/{name}/{otherName}', function ($parameters) {
+    return "<h1>{$parameters['name']} {$parameters['otherName']}</h1>";
+});
 
-$model->id = $modelsCount;
-$model->name = "teste";
+$router->get('/teste/{name}', function ($parameters) {
+    return "<h1 style='color:red'>{$parameters[1]}</h1>";
+});
 
-$model->delete();
+$routeResult = $router->run();
+$result = call_user_func($routeResult['callback'], $routeResult['parameters']);
+
+print_r($result);
