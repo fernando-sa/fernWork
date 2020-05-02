@@ -37,19 +37,20 @@ class Model
 
     public function findAll()
     {
-        if(! $this->modelQuery)
+        if (! $this->modelQuery) {
             $this->modelQuery = new ModelQuery($this);
+        }
 
         return $this->modelQuery->findAll($this);
     }
 
     public function find(array $conditions = [], array $columns = ['*'])
     {
-        if(! $this->modelQuery)
+        if (! $this->modelQuery) {
             $this->modelQuery = new ModelQuery($this);
+        }
 
         return $this->modelQuery->find($conditions, $columns);
-
     }
 
     public function delete()

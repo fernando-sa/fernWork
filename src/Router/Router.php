@@ -43,7 +43,7 @@ class Router
         }
 
         ! $result['result']
-            ? $callback = NULL
+            ? $callback = null
             : $callback = $value;
 
         return [
@@ -70,11 +70,11 @@ class Router
         $urlRegex = preg_replace('/{([a-zA-Z]+)}/', '([a-zA-Z0-9+])', $urlRegex);
         $result = preg_match('/^' . $urlRegex . '$/', $subject, $parameters);
         
-        for ($i=0; $i < count($parameters); $i++) { 
+        for ($i=0; $i < count($parameters); $i++) {
             $variables[0][$i] = str_replace("{", "", $variables[0][$i]);
             $variables[0][$i] = str_replace("}", "", $variables[0][$i]);
 
-            // Paramaeters has to be +1 cause first index is the entire url regex. 
+            // Paramaeters has to be +1 cause first index is the entire url regex.
             // Cause = preg_match questionable API
             $namedParameters[$variables[0][$i]] = $parameters[$i + 1];
         }

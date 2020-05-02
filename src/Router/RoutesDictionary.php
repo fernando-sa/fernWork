@@ -19,8 +19,9 @@ class RoutesDictionary
 
     public function findByMethod(string $method) : array
     {
-        if(! array_key_exists($method, $this->routes))
+        if (! array_key_exists($method, $this->routes)) {
             return [];
+        }
         
         return $this->routes[$method];
     }
@@ -30,5 +31,4 @@ class RoutesDictionary
     {
         return $this->routes;
     }
-
 }

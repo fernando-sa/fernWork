@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace fernandoSa\ORMonster;
 
@@ -40,7 +40,6 @@ class ModelQuery
         $newModels = [];
         // 100% there is a better way of doing this.
         foreach ($results as $record) {
-            
             $newModels[] = new Model;
 
             foreach ($record as $field => $attribute) {
@@ -51,6 +50,4 @@ class ModelQuery
 
         return $newModels;
     }
-
-    
 }
