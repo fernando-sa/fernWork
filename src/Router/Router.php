@@ -15,22 +15,22 @@ class Router
         $this->method = $method;
     }
 
-    public function request(string $method, string $path, callable $callback)
+    public function request(string $method, string $path, $callback) : void
     {
         $this->appRoutes->add($method, $path, $callback);
     }
 
-    public function get($path, $callback)
+    public function get(string $path, $callback) : void
     {
         $this->request('GET', $path, $callback);
     }
 
-    public function post($path, $callback)
+    public function post(string $path, $callback) : void
     {
         $this->request('POST', $path, $callback);
     }
 
-    public function run()
+    public function run() : array
     {
         $routes = $this->appRoutes->findByMethod($this->method);
         
@@ -54,7 +54,7 @@ class Router
 
 
     // Function to match incoming route with route in our dictionary and separate paramaters in URL
-    private function checkUrl(string $toFind, $subject)
+    private function checkUrl(string $toFind, $subject) : array
     {
 
         preg_match_all('/\{([^\}]*)\}/', $toFind, $variables);
@@ -70,7 +70,8 @@ class Router
         $urlRegex = preg_replace('/{([a-zA-Z]+)}/', '([a-zA-Z0-9+])', $urlRegex);
         $result = preg_match('/^' . $urlRegex . '$/', $subject, $parameters);
         
-        for ($i=0; $i < count($parameters); $i++) {
+        // Go through every parameter to assign it to corret associative index
+        for ($i=0; $i < count($variables[0]); $i++) {
             $variables[0][$i] = str_replace("{", "", $variables[0][$i]);
             $variables[0][$i] = str_replace("}", "", $variables[0][$i]);
 
