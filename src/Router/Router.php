@@ -2,11 +2,14 @@
 
 namespace fernandoSa\Router;
 
+const controllerCallDelimiter = '@';
+
 class Router
 {
     private $appRoutes;
     private $method;
     private $path;
+
 
     public function __construct(string $path, string $method)
     {
@@ -17,6 +20,26 @@ class Router
 
     public function request(string $method, string $path, $callback) : void
     {
+
+        // Check if passed function is a string. If so, we must get the function in the controller.
+        if(is_string($callback))
+        {
+            $this->validateControllerCall($callback);
+
+            $separatedCall = explode(controllerCallDelimiter, $callback);
+
+            $callback = new \ReflectionMethod("App\\Controllers\\{$separatedCall[0]}", $separatedCall[1]);
+            $callbackClass = new \ReflectionClass("App\\Controllers\\{$separatedCall[0]}");
+
+            if($callbackClass->getConstructor() !== null)
+            {
+                throw new \Exception("Controllers are not suposed to have constructors.");
+            }
+
+            $callback = $callback->getClosure($callbackClass->newInstance());
+
+        }
+
         $this->appRoutes->add($method, $path, $callback);
     }
 
@@ -82,5 +105,17 @@ class Router
 
 
         return compact('result', 'namedParameters');
+    }
+
+    private function validateControllerCall($controllerCall)
+    {
+        if (! strpos($controllerCall, 'Controller')) {
+            throw new \Exception("Route didn't called a controller");
+        }
+        
+        if (! strpos($controllerCall, controllerCallDelimiter)) {
+            throw new \Exception("Controller didn't has functiond delimiter " . controllerCallDelimiter);
+        }
+
     }
 }

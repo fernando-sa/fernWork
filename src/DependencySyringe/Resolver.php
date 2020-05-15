@@ -15,7 +15,7 @@ class Resolver
         $functionParameters = $function->getParameters();
         $functionParameters = $this->resolveParameters($functionParameters);
 
-        return call_user_func($function->getClosure(), $functionParameters);
+        return call_user_func($function->getClosure(), ... $functionParameters);
     }
 
     public function resolveClass(object $class, array $dependencyValues = []) : object

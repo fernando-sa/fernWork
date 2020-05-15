@@ -2,6 +2,8 @@
 
 namespace fernandoSa\Database;
 
+use fernandoSa\Database\Drivers\MySqlPdo;
+
 class Connection
 {
 
@@ -20,5 +22,10 @@ class Connection
     public function getPdo() : \Pdo
     {
         return $this->pdo;
+    }
+
+    public function getSqlPdo()
+    {
+        return new MySqlPdo($this->getPdo());
     }
 }

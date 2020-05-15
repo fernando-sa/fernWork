@@ -10,7 +10,8 @@
     "require": {},
     "autoload": {
         "psr-4": {
-            "fernandoSa\\": "src"
+            "fernandoSa\\": "src",
+            "App\\": "App"
         }
     },
     "require-dev": {
