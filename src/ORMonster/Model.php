@@ -2,40 +2,38 @@
 
 namespace fernandoSa\ORMonster;
 
+use fernandoSa\App;
+use fernandoSa\Singleton;
 use fernandoSa\Database\Drivers\DriverStrategy;
 
-class Model
+abstract class Model
 {
     protected $driver;
-
-    // TODO: Remove
-    protected $table = "users";
 
     protected $primaryKey = "id";
 
     protected $modelQuery;
 
-    public function setDriverAmbient(DriverStrategy $driver) : Model
+    public function __construct()
     {
-        $this->driver = $driver;
+        $this->driver = Singleton::instance(App::class)->getConnection()->getSqlPdo();
         $this->driver->setTable($this->table ?? $this->className());
         $this->driver->setPrimaryKey($this->primaryKey);
-        return $this;
     }
 
-    public function getDriver()
+    public function getDriver() : DriverStrategy
     {
         return $this->driver;
     }
 
-    public function save()
+    public function save() : void
     {
         $this->driver
             ->save($this)
             ->execute();
     }
 
-    public function findAll()
+    public function findAll() : array
     {
         if (! $this->modelQuery) {
             $this->modelQuery = new ModelQuery($this);
@@ -44,7 +42,7 @@ class Model
         return $this->modelQuery->findAll($this);
     }
 
-    public function find(array $conditions = [], array $columns = ['*'])
+    public function find(array $conditions = [], array $columns = ['*']) : Model
     {
         if (! $this->modelQuery) {
             $this->modelQuery = new ModelQuery($this);
@@ -53,7 +51,7 @@ class Model
         return $this->modelQuery->find($conditions, $columns);
     }
 
-    public function delete()
+    public function delete() : void
     {
         $this->driver
             ->delete($this)

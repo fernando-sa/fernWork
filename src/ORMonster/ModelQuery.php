@@ -20,12 +20,12 @@ class ModelQuery
             ->first();
 
             
-        $newModel = new Model;
+        $newModel = new \ReflectionClass($this->model);
+        $newModel = $newModel->newInstance();
 
         foreach ($result as $field => $value) {
             $newModel->$field = $value;
         }
-        $newModel->setDriverAmbient($this->model->getDriver());
 
         return $newModel;
     }
@@ -40,12 +40,12 @@ class ModelQuery
         $newModels = [];
         // 100% there is a better way of doing this.
         foreach ($results as $record) {
-            $newModels[] = new Model;
+            $newModel = new \ReflectionClass($this->model);
+            $newModels[] = $newModel->newInstance();
 
             foreach ($record as $field => $attribute) {
                 end($newModels)->$field = $attribute;
             }
-            end($newModels)->setDriverAmbient($this->model->getDriver());
         }
 
         return $newModels;

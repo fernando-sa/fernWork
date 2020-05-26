@@ -2,14 +2,14 @@
 
 namespace fernandoSa\Router;
 
-const controllerCallDelimiter = '@';
+const CONTROLLER_CALL_DELIMITER = '@';
+const ROUTES_DIRECTORY = "./App/Routes";
 
 class Router
 {
     private $appRoutes;
     private $method;
     private $path;
-
 
     public function __construct(string $path, string $method)
     {
@@ -22,25 +22,35 @@ class Router
     {
 
         // Check if passed function is a string. If so, we must get the function in the controller.
-        if(is_string($callback))
-        {
+        if (is_string($callback)) {
             $this->validateControllerCall($callback);
 
-            $separatedCall = explode(controllerCallDelimiter, $callback);
+            $separatedCall = explode(CONTROLLER_CALL_DELIMITER, $callback);
 
             $callback = new \ReflectionMethod("App\\Controllers\\{$separatedCall[0]}", $separatedCall[1]);
             $callbackClass = new \ReflectionClass("App\\Controllers\\{$separatedCall[0]}");
 
-            if($callbackClass->getConstructor() !== null)
-            {
-                throw new \Exception("Controllers are not suposed to have constructors.");
+            $classConstructor = $callbackClass->getConstructor();
+
+            if ($classConstructor !== null && $classConstructor->getNumberOfRequiredParameters() > 0) {
+                throw new \Exception("Controllers constructors are not suposed to have required parameters.");
             }
 
             $callback = $callback->getClosure($callbackClass->newInstance());
-
         }
 
         $this->appRoutes->add($method, $path, $callback);
+    }
+
+    public function parseRoutesFiles()
+    {
+        $routeFiles = scandir(ROUTES_DIRECTORY);
+        
+        foreach ($routeFiles as $key => $file) {
+            if (substr($file, -4) === ".php") {
+                require_once(ROUTES_DIRECTORY . "/{$file}");
+            }
+        }
     }
 
     public function get(string $path, $callback) : void
@@ -113,9 +123,8 @@ class Router
             throw new \Exception("Route didn't called a controller");
         }
         
-        if (! strpos($controllerCall, controllerCallDelimiter)) {
-            throw new \Exception("Controller didn't has functiond delimiter " . controllerCallDelimiter);
+        if (! strpos($controllerCall, CONTROLLER_CALL_DELIMITER)) {
+            throw new \Exception("Controller didn't has functiond delimiter " . CONTROLLER_CALL_DELIMITER);
         }
-
     }
 }
